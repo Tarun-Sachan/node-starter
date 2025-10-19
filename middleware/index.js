@@ -1,3 +1,4 @@
 import ValidateRequest from "./validateSchema.js";
-import { GlobalErrorHandler } from "./errorHandler.js";
-export { ValidateRequest, GlobalErrorHandler };
+import { GlobalErrorHandler } from "./globalErrorHandler.js";
+import RequestLogger from "./winston.request.logger.js"
+export { ValidateRequest, GlobalErrorHandler, RequestLogger };

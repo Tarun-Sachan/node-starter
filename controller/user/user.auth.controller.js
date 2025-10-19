@@ -5,7 +5,6 @@ import UserService from "../../service/user.service.js";
 const UserAuthController = {
 
     Login: async (req, res) => {
-        console.log("req.body", req.body)
         const data = await UserService.Login(req.body)
         SuccessResponse(res, data, CONST_MESSAGES.SUCCESS, StatusCodes.OK);
     }

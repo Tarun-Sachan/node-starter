@@ -4,12 +4,17 @@ import 'dotenv/config';
 const port = process.env.PORT;
 import defaultRouter from "./routes/index.js";
 import config from "./config/index.js";
-app.use("/api", defaultRouter);
 import { GlobalErrorHandler } from "./middleware/index.js";
 import { connectDB } from "./config/db.js";
+import { RequestLogger } from "./middleware/index.js";
+
 connectDB();
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(RequestLogger)
+app.use("/api", defaultRouter);
+app.get("/", (req, res) => { res.status(200).send("test successfull") })
 app.listen(config.PORT, () => {
     console.log(`Server listening on port ${port}`)
 })
-
 app.use(GlobalErrorHandler);

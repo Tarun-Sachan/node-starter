@@ -1,23 +1,24 @@
-import Joi from "joi";
-import { StatusCodes } from "http-status-codes";
-/**
- * Middleware to validate request body, query, or params
- * @param {Joi.ObjectSchema} schema - Joi schema
- * @param {"body"|"query"|"params"} property - Which part of request to validate
- */
-
+import JoiValidationError from "../utils/joiValidationError.js";
 
 const ValidateRequest = (schema, property) => {
+    if (!schema?.validate) {
+        throw new Error("ValidateRequest: invalid Joi schema provided");
+    }
+
     return (req, res, next) => {
-        const { error } = schema.validate(req[property], { abortEarly: false });
-
-        if (!error) return next();
-
-        const messages = error.details.map((d) => d.message).join(", ");
-        return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
-            success: false,
-            message: messages,
+        const { error, value } = schema.validate(req[property], {
+            abortEarly: false,
+            stripUnknown: true,
         });
+
+        if (!error) {
+            req[property] = value;
+            return next();
+        }
+
+        const messages = error.details.map(d => d.message);
+
+        return next(new JoiValidationError(messages));
     };
 };
 
