@@ -7,13 +7,15 @@ import config from "./config/index.js";
 import { GlobalErrorHandler } from "./middleware/index.js";
 import { connectDB } from "./config/db.js";
 import { RequestLogger } from "./middleware/index.js";
+import passport from "./config/passport/index.js";
 
+app.use(passport.initialize());
 connectDB();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(RequestLogger)
 app.use("/api", defaultRouter);
-app.get("/", (req, res) => { res.status(200).send("test successfull") })
+app.get("/", (req, res) => { res.status(200).send("test successful") })
 app.listen(config.PORT, () => {
     console.log(`Server listening on port ${port}`)
 })

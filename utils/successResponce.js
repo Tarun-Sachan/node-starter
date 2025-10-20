@@ -7,7 +7,7 @@
  * @param {object} meta - Optional extra metadata like pagination
  */
 import { StatusCodes } from "http-status-codes";
-const SuccessResponse = (res, data = {}, message = "success", statusCode = StatusCodes.OK, meta = {}) => {
+const SuccessResponse = (res, data = {}, statusCode = StatusCodes.OK, message = "success", meta = {}) => {
     return res.status(statusCode).json({
         success: true,
         message,

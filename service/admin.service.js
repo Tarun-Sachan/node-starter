@@ -1,4 +1,4 @@
-import User from "../models/user.model.js";
+import { AdminUser } from "../models/index.js";
 import AppError from "../utils/appError.js";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
@@ -8,7 +8,7 @@ const UserService = {
         const { email, password } = data;
 
         try {
-            const user = await User.findOne({ email }).select("+password");
+            const user = await AdminUser.findOne({ email }).select("+password");
             if (!user) throw new AppError("Invalid email or password", StatusCodes.UNAUTHORIZED);
 
             const isMatch = await user.comparePassword(password);
@@ -28,7 +28,7 @@ const UserService = {
         }
     },
     Signup: async (data) => {
-        const user = await User.create(data);
+        const user = await AdminUser.create(data);
         if (!user) {
             throw new AppError("Error creating user", StatusCodes.BAD_REQUEST);
         }

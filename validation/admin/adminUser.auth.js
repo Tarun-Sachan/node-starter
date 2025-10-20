@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const UserAuthSchema = {
+const AdminUserAuthSchema = {
     Login: Joi.object().keys({
         email: Joi.string().email().required(),
         password: Joi.string().required(),
@@ -12,4 +12,4 @@ const UserAuthSchema = {
     }),
 }
 
-export default UserAuthSchema;
+export default AdminUserAuthSchema;

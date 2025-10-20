@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
-const userSchema = new mongoose.Schema(
+const adminSchema = new mongoose.Schema(
     {
         name: {
             type: String,
@@ -21,50 +21,55 @@ const userSchema = new mongoose.Schema(
             minlength: [6, "Password must be at least 6 characters"],
             select: false,
         },
-        role: {
-            type: String,
-            default: "user",
-            immutable: true,
-        },
         type: {
             type: String,
-            default: "external",
+            default: "internal",
             immutable: true,
+        },
+        role: {
+            type: String,
+            enum: ["admin", "superadmin"],
+            default: "admin",
+        },
+        status: {
+            type: String,
+            enum: ["active", "inactive", "suspended"],
+            default: "active",
         },
         authProvider: {
             type: String,
-            enum: ["local", "google", "github", "facebook", "twitter", "linkedin", "apple", "microsoft"],
             default: "local",
-        },
-        providerId: {
-            type: String,
-            default: null,
+            immutable: true,
         },
     },
     { timestamps: true }
 );
 
-userSchema.pre("save", async function (next) {
+// Hash password before save
+adminSchema.pre("save", async function (next) {
     if (!this.isModified("password") || !this.password) return next();
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
     next();
 });
 
-userSchema.methods.comparePassword = async function (enteredPassword) {
+// Compare entered password with stored hash
+adminSchema.methods.comparePassword = async function (enteredPassword) {
     return bcrypt.compare(enteredPassword, this.password);
 };
 
-userSchema.methods.toJSON = function () {
+// Clean JSON output
+adminSchema.methods.toJSON = function () {
     const obj = this.toObject({ virtuals: true });
     delete obj.password;
     delete obj.__v;
     return obj;
 };
 
-userSchema.virtual("id").get(function () {
+// Virtual ID field
+adminSchema.virtual("id").get(function () {
     return this._id.toHexString();
 });
 
-const User = mongoose.model("User", userSchema);
-export default User;
+const AdminUser = mongoose.model("AdminUser", adminSchema);
+export default AdminUser;
