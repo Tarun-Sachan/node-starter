@@ -15,6 +15,9 @@ router.get("/test", asyncHandler(async (req, res) => {
 
 router.post("/login", ValidateRequest(UserAuthSchema.Login, "body"), asyncHandler(UserAuthController.Login));
 router.post("/signup", ValidateRequest(UserAuthSchema.Signup, "body"), asyncHandler(UserAuthController.Signup));
+router.get("/refresh", passport.authenticate("jwt", { session: false }), asyncHandler(UserAuthController.RefreshToken));
+router.get("/logout", passport.authenticate("jwt", { session: false }), asyncHandler(UserAuthController.Logout));
+router.get("/logoutAll", passport.authenticate("jwt", { session: false }), asyncHandler(UserAuthController.LogoutAll));
 router.get("/profile", passport.authenticate("jwt", { session: false }), (req, res) => {
     console.log(req)
     res.json({

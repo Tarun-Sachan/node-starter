@@ -7,10 +7,11 @@ import config from "../../config/index.js";
 const options = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: config.JWT_SECRET,
+    passReqToCallback: true,
 }
 
 
-const jwtStrategy = new JwtStrategy(options, async (jwt_payload, done) => {
+const jwtStrategy = new JwtStrategy(options, async (req, jwt_payload, done) => {
     try {
         let userModel = jwt_payload.role === "admin" || jwt_payload.role === "superadmin"
             ? AdminUser
@@ -22,6 +23,8 @@ const jwtStrategy = new JwtStrategy(options, async (jwt_payload, done) => {
         if (user.role !== jwt_payload.role) {
             return done(null, false, { message: "Role mismatch" });
         }
+
+        req.token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
 
         return done(null, user);
     } catch (err) {

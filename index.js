@@ -8,7 +8,15 @@ import { GlobalErrorHandler } from "./middleware/index.js";
 import { connectDB } from "./config/db.js";
 import { RequestLogger } from "./middleware/index.js";
 import passport from "./config/passport/index.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
+app.use(cors({
+    origin: "*",
+    credentials: true,
+}));
+
+app.use(cookieParser(config.COOKIE_SECRET));
 app.use(passport.initialize());
 connectDB();
 app.use(express.urlencoded({ extended: true }));

@@ -41,6 +41,10 @@ const adminSchema = new mongoose.Schema(
             default: "local",
             immutable: true,
         },
+        refreshTokens: {
+            type: [String],
+            default: []
+        }
     },
     { timestamps: true }
 );
